@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📝 Docker To-Do App</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; 
+            padding: 20px;
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: rgba(255,255,255,0.95); 
+            border-radius: 20px; 
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; text-align: center; margin-bottom: 30px; }
+        .add-form { 
+            background: #f8f9fa; 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin-bottom: 30px; 
+        }
+        input[type="text"], textarea { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        button { 
+            background: #28a745; 
+            color: white; 
+            border: none; 
+            padding: 12px 24px; 
+            border-radius: 5px; 
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover { background: #218838; }
+        .todo-item { 
+            background: white; 
+            margin: 10px 0; 
+            padding: 20px; 
+            border-radius: 10px; 
+            border-left: 4px solid #007bff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .todo-item.completed { 
+            background: #d4edda; 
+            border-left-color: #28a745; 
+            opacity: 0.8;
+        }
+        .todo-title { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
+        .todo-description { color: #666; margin-bottom: 10px; }
+        .todo-actions { margin-top: 15px; }
+        .btn-complete { background: #ffc107; color: #333; }
+        .btn-delete { background: #dc3545; }
+        .btn-complete:hover { background: #e0a800; }
+        .btn-delete:hover { background: #c82333; }
+        .todo-date { font-size: 12px; color: #999; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 Meine To-Do Liste</h1>
+        
+        <!-- Neues To-Do hinzufügen -->
+        <div class="add-form">
+            <h3>➕ Neues To-Do hinzufügen</h3>
+            <form method="POST" action="/add">
+                <input type="text" name="title" placeholder="To-Do Titel..." required>
+                <textarea name="description" placeholder="Beschreibung (optional)..." rows="3"></textarea>
+                <button type="submit">Hinzufügen</button>
+            </form>
+        </div>
+
+        <!-- To-Do Liste -->
+        <div class="todo-list">
+            {% for todo in todos %}
+            <div class="todo-item {% if todo[3] %}completed{% endif %}">
+                <div class="todo-title">
+                    {% if todo[3] %}✅{% else %}⏳{% endif %} {{ todo[1] }}
+                </div>
+                {% if todo[2] %}
+                <div class="todo-description">{{ todo[2] }}</div>
+                {% endif %}
+                <div class="todo-date">Erstellt: {{ todo[4].strftime('%d.%m.%Y %H:%M') }}</div>
+                
+                <div class="todo-actions">
+                    {% if not todo[3] %}
+                    <a href="/complete/{{ todo[0] }}">
+                        <button class="btn-complete">✓ Erledigt</button>
+                    </a>
+                    {% endif %}
+                    <a href="/delete/{{ todo[0] }}">
+                        <button class="btn-delete">🗑 Löschen</button>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
